@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Osheen Pathak — Creative Director</title>
+<meta name="description" content="Osheen Pathak, Creative Director. Created to be remembered." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;
+  --line-faint:#23252a;
+  --ink:#e9eaec;
+  --dim:#8b9098;
+  --green:#8FC31F;
+  --display:"Anton",Impact,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --face-w:clamp(500px,50vw,1000px);
+  --lane:calc((100% - var(--face-w)) / 2);
+  --win-w:min(200px,calc(var(--lane) - 24px));
+  --orange:#FF6607;
+  --blue:#058c8b;
+  --purple:#931159;
+  --top:50%;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--mono);
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;position:relative;
+}
+body::after{
+  content:"";position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:var(--face-w);pointer-events:none;z-index:1;
+  border-left:1px solid rgba(255,255,255,.035);border-right:1px solid rgba(255,255,255,.035);
+}
+a{color:inherit;text-decoration:none}
+video{display:block;max-width:100%}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+.bg-image{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('./bg.jpeg');background-position:center center;background-size:cover;}
+.video-bg{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+.video-bg video{
+  position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+  object-fit:contain;object-position:center center;
+}
+
+.bg-credit{
+  position:absolute;top:0;left:0;right:0;z-index:1;
+  padding:clamp(60px,10vh,120px) clamp(16px,4vw,60px) 0;
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(28px,7vw,90px);line-height:1.05;letter-spacing:.04em;
+  text-align:center;
+  color:rgba(255,255,255,0.85);
+  pointer-events:none;user-select:none;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.6),
+    0 0 30px rgba(255,255,255,0.3),
+    0 0 60px rgba(255,255,255,0.15),
+    0 4px 20px rgba(0,0,0,0.8);
+}
+
+.atmos{position:fixed;inset:0;pointer-events:none;z-index:60}
+.atmos .scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.015) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay;opacity:.2;
+}
+.atmos .grain{
+  position:absolute;inset:-50%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-size:180px 180px;opacity:.03;animation:grain 6s steps(6) infinite;
+}
+.atmos .vig{position:absolute;inset:0;box-shadow:inset 0 0 120px 20px rgba(0,0,0,.3)}
+@keyframes grain{
+  0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-3%)}
+  60%{transform:translate(-3%,2%)}80%{transform:translate(2%,-4%)}100%{transform:translate(0,0)}
+}
+
+.frame{position:fixed;inset:14px;pointer-events:none;z-index:70}
+.frame span{position:absolute;width:14px;height:14px;border:1px solid var(--line-faint)}
+.frame .tl{top:0;left:0;border-right:0;border-bottom:0}
+.frame .tr{top:0;right:0;border-left:0;border-bottom:0}
+.frame .bl{bottom:0;left:0;border-right:0;border-top:0}
+.frame .br{bottom:0;right:0;border-left:0;border-top:0}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:80;
+  padding:18px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  mix-blend-mode:difference;
+}
+.nav .brand{font-weight:700}
+.nav .brand b{color:var(--green)}
+
+.hero{
+  position:relative;z-index:2;height:100svh;width:100%;
+  background:transparent;overflow:hidden;pointer-events:none;
+}
+.hero-brand{
+  position:absolute;top:var(--top);
+  transform:translateY(-50%);
+  width:var(--win-w);pointer-events:auto;
+  animation:heroIn 1.2s cubic-bezier(.2,.7,.2,1) both;
+}
+
+.hero-brand.bottom{
+  position:relative;top:80%;
+  width:fit-content;
+  font-family:'VT323', monospace;
+  image-rendering: pixelated;
+  text-transform: uppercase;
+  margin: auto;
+  font-color: var
+}
+
+.hero-brand.left{
+  left:max(24px,calc(var(--lane) - var(--win-w) - 8px));
+}
+.hero-brand.right{
+  right:max(24px,calc(var(--lane) - var(--win-w) - 8px));
+}
+.hero-tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--green);margin-bottom:14px;text-shadow:0 2px 18px rgba(0,0,0,.85);
+}
+.hero-title{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(35px,7vw,60px);line-height:.92;letter-spacing:.01em;
+  text-shadow:0 4px 32px rgba(0,0,0,.9);
+}
+.hero-title.left{
+  color: var(--blue);
+}
+.hero-title.right{
+  color: var(--purple);
+}
+.hero-title.bottom{
+  color: var(--orange);
+}
+.hero-title.bottom{
+  font-size:clamp(42px,7vw,90px);
+  font-family:'VT323', monospace;
+  image-rendering: pixelated;
+  text-transform: uppercase;
+}
+.name-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  text-align:center;
+  font-family:'Bebas Neue', sans-serif;font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--dim);
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(calc(-50% + 12px))}to{opacity:1;transform:translateY(-50%)}}
+.hero .cue{
+  position:absolute;left:0;right:0;bottom:26px;z-index:5;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--dim);
+  pointer-events:auto;text-shadow:0 2px 14px rgba(0,0,0,.85);
+}
+.hero .cue .bar{width:1px;height:34px;background:linear-gradient(var(--green),transparent);animation:cuepulse 1.8s ease-in-out infinite}
+@keyframes cuepulse{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
+
+/* Scroll stage — each section is one viewport tall so windows reveal one by one */
+.scroll-stage{position:relative;z-index:2;pointer-events:none}
+
+/* ── YouTube side panel ── */
+/* Panel sits fixed on the left lane; windows stack and reveal as you scroll */
+.yt-panel{
+  position:fixed;
+  left:max(14px, calc(50% - var(--face-w)/2 - var(--win-w) - 20px));
+  top:50%;transform:translateY(-50%);
+  width:var(--win-w);
+  z-index:10;pointer-events:none;
+  opacity:0;transition:opacity .6s ease;
+}
+.yt-panel.visible{opacity:1;pointer-events:auto}
+
+/* Label */
+.yt-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--green);margin-bottom:12px;opacity:.75;
+}
+
+/* Each window stacks; only the "active" ones are shown */
+.yt-window{
+  width:100%;
+  background:rgba(5,5,5,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 12px 40px rgba(0,0,0,.6);
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1);
+  position:absolute;top:0;left:0;
+  pointer-events:none;
+}
+/* Second window offset slightly behind */
+.yt-window:nth-child(2){ top: 0; left: 0; }
+
+.yt-window.show{
+  opacity:1;transform:translateY(0);pointer-events:auto;
+}
+/* When a second window is visible, offset it slightly to peek */
+.yt-window.peek{
+  opacity:.55;
+  transform:translateY(calc(100% + 10px)) scale(.97);
+  pointer-events:none;
+}
+
+.yt-window .frame-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.yt-window iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-window .cap{
+  padding:8px 10px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  white-space:nowrap;overflow:hidden;
+}
+.yt-window .cap span{overflow:hidden;text-overflow:ellipsis;}
+.yt-window a.ext{
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;
+  padding:2px 6px;background:rgba(0,0,0,.65);color:var(--ink);border:1px solid rgba(255,255,255,.12);
+}
+.yt-window a.ext:hover,.yt-window a.ext:focus-visible{color:var(--green);border-color:var(--green)}
+
+/* counter */
+.yt-counter{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--dim);
+  margin-top:10px;text-align:right;
+}
+
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+
+@media (max-width:680px){
+  :root{--face-w:clamp(150px,46vw,240px);--win-w:min(200px,calc(var(--lane) - 8px));--top:45%;};
+}
+@media (max-width:520px){
+  .yt-panel{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-image" aria-hidden="true"></div>
+
+<div class="video-bg">
+  <video id="scrub" src="./test.webm" muted playsinline preload="auto" aria-hidden="true">
+        </video>
+</div>
+
+<div class="atmos" aria-hidden="true">
+  <div class="grain"></div>
+  <div class="scan"></div>
+  <div class="vig"></div>
+</div>
+<div class="frame" aria-hidden="true"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+
+<nav class="nav">
+  <a class="brand" href="#top">OSHEEN <b>PATHAK</b></a>
+</nav>
+
+<div class="bg-credit" aria-hidden="true">Creative Director: Osheen Pathak</div>
+
+<header class="hero" id="top">
+  <h1 class="sr-only">Osheen Pathak — Creative Director</h1>
+  <div class="hero-brand left">
+    <p class="hero-title left">CREATED</p>
+  </div>
+  <div class="hero-brand right">
+    <p class="hero-title right">TO BE</p>
+  </div>
+  <div class="hero-brand bottom">
+    <p class="hero-title bottom">REMEMBERED</p>
+  </div>
+  <div class="cue"><span>Scroll to explore</span><span class="bar"></span></div>
+</header>
+
+<!-- Each section = one screen = one YouTube window reveal -->
+<div class="scroll-stage" id="scroll-stage" aria-hidden="true" style="height:500vh"></div>
+
+<!-- EDIT: replace VIDEO_ID_N with your actual YouTube video IDs -->
+<div class="yt-panel" id="yt-panel" aria-label="Selected films">
+  <p class="yt-label">Selected Films</p>
+
+  <div class="yt-window" id="yt-win-0">
+    <div class="frame-wrap"><iframe data-src="https://www.youtube.com/embed/VIDEO_ID_1?rel=0&modestbranding=1" title="Meridian" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap"><span>Meridian — Identity &amp; Art Direction</span><a class="ext" href="https://www.youtube.com/watch?v=VIDEO_ID_1" target="_blank" rel="noopener noreferrer">YT ↗</a></p>
+  </div>
+
+  <div class="yt-window" id="yt-win-1">
+    <div class="frame-wrap"><iframe data-src="https://www.youtube.com/embed/VIDEO_ID_2?rel=0&modestbranding=1" title="Northwind" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap"><span>Northwind — Launch Campaign</span><a class="ext" href="https://www.youtube.com/watch?v=VIDEO_ID_2" target="_blank" rel="noopener noreferrer">YT ↗</a></p>
+  </div>
+
+  <div class="yt-window" id="yt-win-2">
+    <div class="frame-wrap"><iframe data-src="https://www.youtube.com/embed/VIDEO_ID_3?rel=0&modestbranding=1" title="Alpenglow" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap"><span>Alpenglow — Title Sequence</span><a class="ext" href="https://www.youtube.com/watch?v=VIDEO_ID_3" target="_blank" rel="noopener noreferrer">YT ↗</a></p>
+  </div>
+
+  <div class="yt-window" id="yt-win-3">
+    <div class="frame-wrap"><iframe data-src="https://www.youtube.com/embed/VIDEO_ID_4?rel=0&modestbranding=1" title="Basecamp" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap"><span>Basecamp — Brand System</span><a class="ext" href="https://www.youtube.com/watch?v=VIDEO_ID_4" target="_blank" rel="noopener noreferrer">YT ↗</a></p>
+  </div>
+
+  <p class="yt-counter" id="yt-counter">01 / 04</p>
+</div>
+
+<script>
+(function(){
+  var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var video = document.getElementById("scrub");
+  var ytPanel = document.getElementById("yt-panel");
+  var ytCounter = document.getElementById("yt-counter");
+  var windows = Array.from(document.querySelectorAll(".yt-window"));
+  var TOTAL = windows.length;
+  var FALLBACK_DUR = 4.125, primed = false, ytLoaded = false, pending = null;
+  var lastActive = -1;
+
+  function getDuration(){ var d = video.duration; return (isFinite(d) && d > 0) ? d : FALLBACK_DUR; }
+  function isReady(){ return video.readyState >= 1; }
+
+  function prime(){
+    if(primed) return; primed = true;
+    var p = video.play();
+    if(p && p.then){ p.then(function(){ video.pause(); }).catch(function(){ primed=false; }); }
+    else { try{ video.pause(); }catch(e){} }
+  }
+  video.addEventListener("loadeddata", prime);
+  video.addEventListener("canplay", prime);
+  if(video.readyState >= 2) prime();
+
+  function unlock(){
+    var p = video.play();
+    if(p && p.then){ p.then(function(){ video.pause(); }).catch(function(){}); }
+    else { try{ video.pause(); }catch(e){} }
+  }
+  window.addEventListener("touchstart", unlock, {once:true, passive:true});
+  window.addEventListener("pointerdown", unlock, {once:true});
+
+  function progressNow(){
+    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    if(scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, window.scrollY / scrollable));
+  }
+
+  function loadYouTube(){
+    if(ytLoaded) return; ytLoaded = true;
+    ytPanel.querySelectorAll("iframe[data-src]").forEach(function(f){
+      f.src = f.getAttribute("data-src");
+      f.removeAttribute("data-src");
+    });
+  }
+
+  function applySeek(t){
+    if(!isReady()) return;
+    t = Math.max(0, Math.min(getDuration() - 0.001, t));
+    if(video.seeking){ pending = t; return; }
+    if(Math.abs(video.currentTime - t) < 0.003) return;
+    try{ video.currentTime = t; }catch(e){}
+  }
+  video.addEventListener("seeked", function(){
+    if(pending !== null){ var t = pending; pending = null; applySeek(t); }
+  });
+
+  function pad(n){ return n < 10 ? "0"+n : ""+n; }
+
+  function onScroll(){
+    var p = progressNow();
+    var scrollY = window.scrollY;
+    var vh = window.innerHeight;
+
+    // Show panel after scrolling past the hero
+    var pastLanding = scrollY > vh * 0.55;
+    if(pastLanding){
+      ytPanel.classList.add("visible");
+      loadYouTube();
+    } else {
+      ytPanel.classList.remove("visible");
+    }
+
+    // Which window to show: divide the scroll-stage into TOTAL equal sections
+    // scroll-stage starts at vh (after the hero), spans 4*vh (400vh total)
+    var stageStart = vh;
+    var stageLen = vh * 4; // matches height:500vh minus the hero 100vh
+    var stageProgress = Math.max(0, Math.min(1, (scrollY - stageStart) / stageLen));
+    // activeIndex 0..TOTAL-1
+    var activeIndex = Math.min(TOTAL - 1, Math.floor(stageProgress * TOTAL));
+
+    if(activeIndex !== lastActive){
+      lastActive = activeIndex;
+      windows.forEach(function(w, i){
+        w.classList.remove("show", "peek");
+        if(i === activeIndex) w.classList.add("show");
+        else if(i === activeIndex + 1) w.classList.add("peek");
+      });
+      ytCounter.textContent = pad(activeIndex + 1) + " / " + pad(TOTAL);
+    }
+
+    if(!prefersReduced) applySeek(p * getDuration());
+  }
+
+  if(prefersReduced){
+    function showEnd(){ try{ video.currentTime = getDuration() - 0.05; }catch(e){} }
+    if(isReady()) showEnd(); else video.addEventListener("loadeddata", showEnd, {once:true});
+    ytPanel.classList.add("visible");
+    loadYouTube();
+    windows[0].classList.add("show");
+    return;
+  }
+
+  window.addEventListener("scroll", onScroll, {passive:true});
+  window.addEventListener("resize", onScroll);
+  onScroll();
+  video.addEventListener("loadeddata", onScroll, {once:true});
+  video.addEventListener("loadedmetadata", onScroll, {once:true});
+})();
+</script>
+</body>
+</html>
