@@ -42,7 +42,7 @@ a{color:inherit;text-decoration:none}
 video{display:block;max-width:100%}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 
-.bg-image{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('./bg.jpeg');background-position:center center;background-size:cover;}
+.bg-image{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:0;pointer-events:none;background-image:url('./bg.jpeg');background-position:center center;background-size:cover;}
 .bg-calligraphy{
   position:absolute;top:3%;left:0;right:0;z-index:1;pointer-events:none;
   display:flex;align-items:flex-start;justify-content:center;
@@ -52,7 +52,7 @@ video{display:block;max-width:100%}
   opacity:0.85;
   transform:translateY(-50%);
 }
-.video-bg{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+.video-bg{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:2;pointer-events:none;overflow:hidden;}
 .video-bg video{
   position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;
   object-fit:contain;object-position:center center;
