@@ -312,6 +312,8 @@ video{display:block;max-width:100%}
   :root{--face-w:clamp(150px,46vw,240px);--win-w:min(200px,calc(var(--lane) - 8px));--top:45%;};
   /* Enlarge the letterboxed bg video so it fills more of the tall mobile viewport */
   .video-bg video{transform:scale(1.8);transform-origin:center center;}
+  /* Lower the calligraphy so it overlaps (sits behind) the enlarged video like on desktop */
+  .bg-calligraphy{top:20vh;}
 }
 @media (max-width:520px){
   .yt-window{width:180px}
