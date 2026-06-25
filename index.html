@@ -7,9 +7,8 @@
 <meta name="description" content="Osheen Pathak, Creative Director. Created to be remembered." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#050505;
@@ -124,7 +123,6 @@ video{display:block;max-width:100%}
   image-rendering: pixelated;
   text-transform: uppercase;
   margin: auto;
-  font-color: var
 }
 
 .hero-brand.left{
@@ -156,12 +154,6 @@ video{display:block;max-width:100%}
   font-family:'VT323', monospace;
   image-rendering: pixelated;
   text-transform: uppercase;
-}
-.name-bottom{
-  position:absolute;bottom:0;left:0;right:0;
-  text-align:center;
-  font-family:'Bebas Neue', sans-serif;font-size:10px;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--dim);
 }
 @keyframes heroIn{from{opacity:0;transform:translateY(calc(-50% + 12px))}to{opacity:1;transform:translateY(-50%)}}
 .hero .cue{
@@ -215,11 +207,103 @@ video{display:block;max-width:100%}
   transform:scale(1.08);
   filter:drop-shadow(0 0 16px rgba(143,195,31,.65)) drop-shadow(0 6px 18px rgba(0,0,0,.75));
 }
+/* Hover caption so the floating logos read as clickable links */
+.yt-window .yt-cap{
+  position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);
+  white-space:nowrap;
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink);background:rgba(5,5,5,.8);
+  border:1px solid rgba(255,255,255,.12);padding:3px 8px;
+  opacity:0;transition:opacity .25s ease;pointer-events:none;
+  text-shadow:0 2px 8px rgba(0,0,0,.8);
+}
+.yt-window .yt-cap b{color:var(--green);font-weight:700}
+.yt-window:hover .yt-cap,.yt-window:focus-visible .yt-cap{opacity:1;}
 
 /* counter */
 .yt-counter{
   position:absolute;left:26px;bottom:60px;margin:0;
   font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--dim);
+}
+
+/* ── Nav links to in-page sections ── */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.nav .links{display:flex;gap:20px}
+.nav .links a{color:var(--dim);transition:color .25s ease}
+.nav .links a:hover,.nav .links a:focus-visible{color:var(--green)}
+
+/* ── Real content sections (retro-terminal panels over the fixed backdrop) ── */
+.content{position:relative;z-index:5;pointer-events:auto}
+.section{
+  max-width:var(--face-w);margin:0 auto;
+  padding:clamp(28px,5vw,56px);
+  margin-bottom:clamp(40px,8vh,90px);
+  background:rgba(5,5,5,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 18px 60px rgba(0,0,0,.6);
+}
+.kicker{
+  font-family:var(--mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--green);margin-bottom:16px;
+}
+.section h2{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(30px,5vw,56px);line-height:.98;letter-spacing:.01em;margin-bottom:20px;
+}
+.section p{color:var(--dim);max-width:62ch;margin-bottom:14px}
+.section p b{color:var(--ink);font-weight:500}
+
+.disciplines{
+  list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;
+}
+.disciplines li{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  border:1px solid rgba(255,255,255,.14);padding:6px 12px;
+}
+
+/* Selected Work grid */
+.work-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px;
+}
+.work-card{
+  display:block;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.02);padding:20px;
+  transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.work-card:hover,.work-card:focus-visible{
+  border-color:var(--green);transform:translateY(-3px);
+  box-shadow:0 0 22px rgba(143,195,31,.18);
+}
+.work-card .wc-title{
+  font-family:var(--display);text-transform:uppercase;font-size:clamp(20px,2.4vw,28px);
+  line-height:1;margin-bottom:10px;
+}
+.work-card .wc-meta{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  display:flex;justify-content:space-between;gap:10px;
+}
+.work-card .wc-go{color:var(--green)}
+
+/* Contact / footer */
+.contact-links{display:flex;flex-wrap:wrap;gap:14px 28px;margin-top:6px}
+.contact-links a{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px;
+  transition:color .25s ease, border-color .25s ease;
+}
+.contact-links a:hover,.contact-links a:focus-visible{color:var(--green);border-color:var(--green)}
+.site-footer{
+  max-width:var(--face-w);margin:0 auto;padding:24px clamp(28px,5vw,56px) 60px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+
+@media (max-width:680px){
+  .nav .links{gap:14px}
+  .section{margin-left:14px;margin-right:14px}
+}
+@media (max-width:520px){
+  .nav .links{display:none}
 }
 
 :focus-visible{outline:2px solid var(--green);outline-offset:3px}
@@ -244,7 +328,7 @@ video{display:block;max-width:100%}
 </div>
 
 <div class="video-bg">
-  <video id="scrub" src="./test.webm" muted playsinline preload="auto" aria-hidden="true">
+  <video id="scrub" src="./test.webm" poster="./bg.jpeg" muted playsinline preload="auto" aria-hidden="true">
         </video>
 </div>
 
@@ -257,6 +341,11 @@ video{display:block;max-width:100%}
 
 <nav class="nav">
   <a class="brand" href="#top">OSHEEN <b>PATHAK</b></a>
+  <span class="links">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </span>
 </nav>
 
 <header class="hero" id="top">
@@ -275,7 +364,7 @@ video{display:block;max-width:100%}
 </header>
 
 <!-- Each section = one screen = one YouTube window reveal -->
-<div class="scroll-stage" id="scroll-stage" aria-hidden="true" style="height:500svh"></div>
+<div class="scroll-stage" id="scroll-stage" aria-hidden="true" style="height:360svh"></div>
 
 <!-- EDIT: replace VIDEO_ID_N with your actual YouTube video IDs -->
 <div class="yt-panel" id="yt-panel" aria-label="Selected films">
@@ -283,38 +372,106 @@ video{display:block;max-width:100%}
 
   <a class="yt-window" id="yt-win-0" href="https://www.youtube.com/watch?v=VIDEO_ID_1" target="_blank" rel="noopener noreferrer" aria-label="Brand 1 — watch film">
     <img src="./logo-1.png" alt="Brand 1" />
+    <span class="yt-cap"><b>Brand 1</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-1" href="https://www.youtube.com/watch?v=VIDEO_ID_2" target="_blank" rel="noopener noreferrer" aria-label="Brand 2 — watch film">
     <img src="./logo-2.png" alt="Brand 2" />
+    <span class="yt-cap"><b>Brand 2</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-2" href="https://www.youtube.com/watch?v=VIDEO_ID_3" target="_blank" rel="noopener noreferrer" aria-label="Brand 3 — watch film">
     <img src="./logo-3.png" alt="Brand 3" />
+    <span class="yt-cap"><b>Brand 3</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-3" href="https://www.youtube.com/watch?v=VIDEO_ID_4" target="_blank" rel="noopener noreferrer" aria-label="Brand 4 — watch film">
     <img src="./logo-4.png" alt="Brand 4" />
+    <span class="yt-cap"><b>Brand 4</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-4" href="https://www.youtube.com/watch?v=VIDEO_ID_5" target="_blank" rel="noopener noreferrer" aria-label="Brand 5 — watch film">
     <img src="./logo-5.png" alt="Brand 5" />
+    <span class="yt-cap"><b>Brand 5</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-5" href="https://www.youtube.com/watch?v=VIDEO_ID_6" target="_blank" rel="noopener noreferrer" aria-label="Brand 6 — watch film">
     <img src="./logo-6.png" alt="Brand 6" />
+    <span class="yt-cap"><b>Brand 6</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-6" href="https://www.youtube.com/watch?v=VIDEO_ID_7" target="_blank" rel="noopener noreferrer" aria-label="Brand 7 — watch film">
     <img src="./logo-7.png" alt="Brand 7" />
+    <span class="yt-cap"><b>Brand 7</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <a class="yt-window" id="yt-win-7" href="https://www.youtube.com/watch?v=VIDEO_ID_8" target="_blank" rel="noopener noreferrer" aria-label="Brand 8 — watch film">
     <img src="./logo-8.png" alt="Brand 8" />
+    <span class="yt-cap"><b>Brand 8</b> &nbsp;Watch&nbsp;↗</span>
   </a>
 
   <p class="yt-counter" id="yt-counter">01 / 08</p>
 </div>
+
+<main class="content">
+
+  <section class="section" id="about">
+    <!-- <p class="kicker">About</p>
+    <h2>Created to be remembered</h2>
+    <p><b>Osheen Pathak</b> is a creative director working across brand, art direction, and film — building identities and campaigns designed to be felt, not just seen.</p>
+    <p>[ Replace this with a real bio: your approach, the kind of work you take on, notable clients or recognition, and what makes your direction distinctive. ]</p>
+    <ul class="disciplines">
+      <li>Art Direction</li>
+      <li>Branding</li>
+      <li>Film &amp; Motion</li>
+      <li>Campaign Strategy</li>
+      <li>Visual Identity</li>
+    </ul>
+  </section>
+
+  <section class="section" id="work">
+    <p class="kicker">Selected Work</p>
+    <h2>Projects</h2>
+    <p>A selection of directed work. [ Replace the cards below with real projects — title, your role, year, and a link to the case study or film. ]</p>
+    <div class="work-grid">
+      <a class="work-card" href="https://www.youtube.com/watch?v=VIDEO_ID_1" target="_blank" rel="noopener noreferrer">
+        <div class="wc-title">Project One</div>
+        <div class="wc-meta"><span>Art Direction · 2025</span><span class="wc-go">View ↗</span></div>
+      </a>
+      <a class="work-card" href="https://www.youtube.com/watch?v=VIDEO_ID_2" target="_blank" rel="noopener noreferrer">
+        <div class="wc-title">Project Two</div>
+        <div class="wc-meta"><span>Brand Film · 2025</span><span class="wc-go">View ↗</span></div>
+      </a>
+      <a class="work-card" href="https://www.youtube.com/watch?v=VIDEO_ID_3" target="_blank" rel="noopener noreferrer">
+        <div class="wc-title">Project Three</div>
+        <div class="wc-meta"><span>Identity · 2024</span><span class="wc-go">View ↗</span></div>
+      </a>
+      <a class="work-card" href="https://www.youtube.com/watch?v=VIDEO_ID_4" target="_blank" rel="noopener noreferrer">
+        <div class="wc-title">Project Four</div>
+        <div class="wc-meta"><span>Campaign · 2024</span><span class="wc-go">View ↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <p class="kicker">Contact</p>
+    <h2>Let's make something</h2>
+    <p>For projects, collaborations, and enquiries. [ Replace with your real email and social handles. ]</p>
+    <div class="contact-links">
+      <a href="mailto:hello@osheenpathak.com">Email</a>
+      <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>
+      <a href="https://vimeo.com/" target="_blank" rel="noopener noreferrer">Vimeo</a>
+    </div>
+  </section> -->
+
+  <footer class="site-footer">
+    <span>© <span id="year">2026</span> Osheen Pathak</span>
+    <span>Creative Director</span>
+  </footer>
+
+</main>
 
 <script>
 (function(){
@@ -326,6 +483,9 @@ video{display:block;max-width:100%}
   var TOTAL = windows.length;
   var FALLBACK_DUR = 4.125, primed = false, ytLoaded = false, pending = null;
   var lastActive = -1;
+
+  var yearEl = document.getElementById("year");
+  if(yearEl){ yearEl.textContent = new Date().getFullYear(); }
 
   // ── Windows spawn from the bottom and ride up as you scroll ──
   // Each gets a random horizontal lane; vertical position is driven by scroll.
@@ -413,25 +573,24 @@ video{display:block;max-width:100%}
 
   function pad(n){ return n < 10 ? "0"+n : ""+n; }
 
-  function onScroll(){
-    var p = progressNow();
+  function render(){
     var scrollY = window.scrollY;
     var vh = window.innerHeight;
 
-    // Show panel after scrolling past the hero
-    var pastLanding = scrollY > vh * 0.55;
-    if(pastLanding){
+    // The intro stage runs from the end of the hero across the scroll-stage spacer.
+    var stageStart = vh;
+    var stageLen = vh * 2.6; // matches #scroll-stage height (360svh) minus the hero (100svh)
+    var stageProgress = Math.max(0, Math.min(1, (scrollY - stageStart) / stageLen));
+
+    // Show the floating-logo panel only while inside the stage; hide it once real
+    // content begins so its label/counter don't bleed over the sections below.
+    var inStage = scrollY > vh * 0.55 && stageProgress < 0.999;
+    if(inStage){
       ytPanel.classList.add("visible");
       loadYouTube();
     } else {
       ytPanel.classList.remove("visible");
     }
-
-    // Which window to show: divide the scroll-stage into TOTAL equal sections
-    // scroll-stage starts at vh (after the hero), spans 4*vh (400vh total)
-    var stageStart = vh;
-    var stageLen = vh * 4; // matches height:500vh minus the hero 100vh
-    var stageProgress = Math.max(0, Math.min(1, (scrollY - stageStart) / stageLen));
 
     // Drive the windows up from the bottom as the user scrolls
     updatePositions(stageProgress);
@@ -445,7 +604,16 @@ video{display:block;max-width:100%}
       ytCounter.textContent = pad(activeCount) + " / " + pad(TOTAL);
     }
 
-    if(!prefersReduced) applySeek(p * getDuration());
+    // Scrub the bg video across the intro stage, then hold the final frame.
+    if(!prefersReduced) applySeek(stageProgress * getDuration());
+  }
+
+  // Coalesce scroll/resize events to one update per frame to avoid scrub stutter.
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function(){ ticking = false; render(); });
   }
 
   if(prefersReduced){
