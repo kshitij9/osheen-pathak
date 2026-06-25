@@ -1,3 +1,6 @@
+# Local editor/dev tooling
+.claude/
+
 # Adobe Premiere project & working media
 Adobe Premiere Pro Auto-Save/
 *.prproj
