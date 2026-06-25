@@ -1,0 +1,12 @@
+# Adobe Premiere project & working media
+Adobe Premiere Pro Auto-Save/
+*.prproj
+*.mov
+
+# Large/working video exports not used by the site
+blueprint.mp4
+clear.mp4
+portfolio.mp4
+removed.mp4
+video.mp4
+no_bg.webm
