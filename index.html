@@ -27,7 +27,7 @@
   --top:50%;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:auto}
+html{scroll-behavior:auto;overflow-x:hidden}
 body{
   background:var(--bg);color:var(--ink);font-family:var(--mono);
   font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
@@ -48,7 +48,7 @@ video{display:block;max-width:100%}
   display:flex;align-items:flex-start;justify-content:center;
 }
 .bg-calligraphy img{
-  width:clamp(400px,50vw,700px);height:auto;
+  width:clamp(400px,50vw,700px);max-width:88vw;height:auto;
   opacity:0.85;
   transform:translateY(-50%);
 }
@@ -73,7 +73,7 @@ video{display:block;max-width:100%}
     0 4px 20px rgba(0,0,0,0.8);
 }
 
-.atmos{position:fixed;inset:0;pointer-events:none;z-index:60}
+.atmos{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
 .atmos .scan{
   position:absolute;inset:0;
   background:repeating-linear-gradient(to bottom,rgba(255,255,255,.015) 0 1px,transparent 1px 3px);
@@ -171,7 +171,7 @@ video{display:block;max-width:100%}
 /* ── Scattered film windows ── */
 /* Full-viewport overlay; windows are placed at random spots around the center video */
 .yt-panel{
-  position:fixed;inset:0;
+  position:fixed;inset:0;overflow:hidden;
   z-index:10;pointer-events:none;
   opacity:0;transition:opacity .6s ease;
 }
