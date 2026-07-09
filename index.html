@@ -20,6 +20,48 @@ body{
 .film{position:fixed;inset:0;z-index:0;background:var(--bg);pointer-events:none}
 .film canvas{width:100%;height:100%;display:block}
 
+/* Scroll-synced statement text — two columns flanking the centred face.
+   Container opacity + per-column transforms are driven from JS by frame index. */
+.prose{
+  position:fixed;inset:0;z-index:5;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  /* gap = the central corridor kept clear for the face */
+  gap:clamp(240px,31vw,540px);
+  padding:clamp(20px,5vh,60px) clamp(16px,4vw,64px);
+  opacity:0;will-change:opacity,filter;
+}
+/* Scrim darkens the left/right edges (where the text sits) and stays clear
+   through the centre so the face reads. Fades in/out with .prose. */
+.prose::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to right,
+    rgba(4,2,1,.85) 0%, rgba(4,2,1,.5) 20%, rgba(4,2,1,0) 40%,
+    rgba(4,2,1,0) 60%, rgba(4,2,1,.5) 80%, rgba(4,2,1,.85) 100%);
+}
+.prose-col{
+  position:relative;flex:0 0 auto;width:clamp(200px,26vw,360px);
+  color:#f6efe4;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(11.5px,1.02vw,15px);
+  line-height:1.66;letter-spacing:.004em;
+  text-shadow:0 1px 16px rgba(0,0,0,.72), 0 0 30px rgba(190,64,10,.18);
+  will-change:transform;
+}
+.prose-head{
+  position:absolute;top:clamp(22px,6.5vh,64px);left:50%;
+  transform:translate(-50%,0);transform-origin:50% 0;
+  margin:0;color:#FCCC19;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-weight:800;text-transform:uppercase;white-space:nowrap;
+  font-size:clamp(15px,2vw,30px);letter-spacing:.3em;
+  text-shadow:0 2px 4px rgba(0,0,0,.85), 0 3px 22px rgba(0,0,0,.7), 0 0 34px rgba(230,80,10,.35);
+}
+.prose-left{transform-origin:100% 50%}
+.prose-right{text-align:right;transform-origin:0% 50%}
+.prose-col p{margin:0 0 .95em}
+.prose-col p:last-child{margin-bottom:0}
+.prose-col .accent{color:#FCCC19;font-weight:600;letter-spacing:.02em}
+
 /* Progress hairline at the very bottom */
 .progress{position:fixed;left:0;bottom:0;height:2px;z-index:10;
   width:calc(var(--p,0)*100%);background:#FCCC19;
@@ -29,6 +71,19 @@ body{
 .scroll-track{position:relative;z-index:1;height:400svh;pointer-events:none}
 
 :focus-visible{outline:2px solid #FCCC19;outline-offset:3px}
+
+@media (max-width:680px){
+  /* Portrait: stack the two blocks above/below the face instead of beside it. */
+  .prose{flex-direction:column;justify-content:space-between;
+    padding:clamp(58px,11vh,92px) 22px clamp(26px,7vh,64px);gap:14px}
+  .prose-head{top:clamp(18px,3vh,26px);font-size:clamp(14px,4.6vw,20px);letter-spacing:.26em}
+  .prose::before{background:linear-gradient(to bottom,
+    rgba(4,2,1,.86) 0%, rgba(4,2,1,.5) 22%, rgba(4,2,1,0) 42%,
+    rgba(4,2,1,0) 58%, rgba(4,2,1,.5) 78%, rgba(4,2,1,.86) 100%)}
+  .prose-col{width:100%;max-width:100%;font-size:clamp(11px,3.1vw,13.5px);
+    line-height:1.5;text-align:center;text-shadow:0 1px 14px rgba(0,0,0,.8)}
+  .prose-right{text-align:center}
+}
 </style>
 </head>
 <body>
@@ -36,6 +91,20 @@ body{
 <h1 class="sr-only">Osheen Pathak — Creative Director. Created to be remembered.</h1>
 
 <div class="film" aria-hidden="true"><canvas id="film"></canvas></div>
+
+<section class="prose" id="prose" aria-label="Manifesto">
+  <h2 class="prose-head" id="prose-head">The Manifesto</h2>
+  <div class="prose-col prose-left">
+    <p>The campaigns people remember aren&rsquo;t remembered because they were the most complicated. They&rsquo;re remembered because they took something universally true and expressed it in the simplest way possible.</p>
+    <p class="accent">That&rsquo;s how I think about creative.</p>
+    <p>I started as a copywriter. Then spent four years editing video, which is where I actually learned that a story isn&rsquo;t finished when it&rsquo;s written. It&rsquo;s rewritten in the edit. Leading post-production taught me how ideas survive execution, or don&rsquo;t. Creative Direction is where it all came together: strategy, storytelling, craft, production, all in one place.</p>
+  </div>
+  <div class="prose-col prose-right">
+    <p id="p-synth"><span id="seg-move">Having worked every stage means I hold the whole thing in my head at once. I&rsquo;m thinking about production while I&rsquo;m still shaping the idea. </span>I&rsquo;m editing before the camera even rolls. Writing, filmmaking, execution &mdash; to me these were never separate disciplines. They&rsquo;re just different points where the same idea can get protected, or lost.</p>
+    <p>I&rsquo;m not chasing beautiful work. I&rsquo;m interested in making work that people remember years later because it became part of the way they think.</p>
+  </div>
+</section>
+
 <div class="progress" aria-hidden="true"></div>
 
 <!-- scroll room to scrub the film -->
@@ -116,6 +185,42 @@ body{
     lastDrawn = f;
   }
 
+  // ── Scroll-synced statement text ─────────────────────────────
+  // Opacity + focus-pull + drift are driven by the same frame index as the
+  // film, so the copy moves in lockstep with the background. Visible 27→80.
+  var prose = document.getElementById("prose");
+  var proseL = prose.querySelector(".prose-left");
+  var proseR = prose.querySelector(".prose-right");
+  var proseHead = document.getElementById("prose-head");
+  function clamp01(x){ return x < 0 ? 0 : (x > 1 ? 1 : x); }
+  function smooth(a, b, x){ var t = clamp01((x-a)/(b-a)); return t*t*(3-2*t); }
+  // Overshoot ease (back-out) — the columns settle with a slight snap for drama.
+  function backOut(t){ t = clamp01(t); var s = 1.7; var u = t - 1; return 1 + u*u*((s+1)*u + s); }
+  var T_IN = 27, T_OUT = 80;
+  function updateText(f){
+    // opacity: fade in over the first ~8 frames, clear over the last ~6
+    var vis = clamp01(Math.min(smooth(T_IN, T_IN+8, f), 1 - smooth(T_OUT-6, T_OUT, f)));
+    // presence: 1 while held, 0 at both ends → drives the slide/scale on entry AND exit
+    var present = smooth(T_IN, T_IN+14, f) * (1 - smooth(T_OUT-9, T_OUT, f));
+    var eased = backOut(present);
+    var away = 1 - eased;                                   // 1 = parted off-screen, 0 = settled
+    var slide = away * Math.min(160, window.innerWidth*0.12); // converge toward the face
+    var y = away * 20 - (f - T_IN)*0.22;                    // small vertical settle + gentle parallax
+    var s = (0.9 + eased*0.1).toFixed(4);                  // scale 0.90 → 1.00
+    var blur = (1-vis)*9;                                   // stronger focus-pull
+
+    prose.style.opacity = vis.toFixed(3);
+    prose.style.filter = vis > 0 ? "blur(" + blur.toFixed(2) + "px)" : "";
+    proseL.style.transform = "translate(" + (-slide).toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + s + ")";
+    proseR.style.transform = "translate(" + ( slide).toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + s + ")";
+
+    // Heading: drops in from above with its letter-spacing opening up as it settles.
+    var hy = away * -26;
+    var hs = (0.9 + eased*0.1).toFixed(4);
+    proseHead.style.transform = "translate(-50%," + hy.toFixed(1) + "px) scale(" + hs + ")";
+    proseHead.style.letterSpacing = (0.16 + eased*0.16).toFixed(3) + "em";
+  }
+
   function loop(){
     var diff = target - cur;
     if(Math.abs(diff) < 0.01){ cur = target; }
@@ -123,6 +228,7 @@ body{
 
     var resized = sizeCanvas();
     if(Math.abs(cur - lastDrawn) > 0.004 || resized) drawFrame(cur);
+    updateText(cur);
 
     if(Math.abs(target - cur) > 0.004){ requestAnimationFrame(loop); }
     else { running = false; }
@@ -135,6 +241,7 @@ body{
     sizeCanvas();
     cur = target;
     drawFrame(Math.max(0, Math.min(count-1, target)));
+    updateText(cur);
   }
 
   function onScroll(){
@@ -188,10 +295,32 @@ body{
     usingMobile = m;
     startSequence(m ? MOBILE : DESKTOP);
   }
-  // Swap sequences if the viewport crosses the breakpoint (e.g. phone rotate).
-  if(mq.addEventListener) mq.addEventListener("change", pickSequence);
-  else if(mq.addListener) mq.addListener(pickSequence);
-  pickSequence();
+
+  // On mobile the top block runs one sentence further (through "...shaping the
+  // idea"). That sentence lives in a span inside the synthesis paragraph; we
+  // reparent it to the top block on mobile and restore it on desktop, so the
+  // desktop paragraph stays whole.
+  var segMove = document.getElementById("seg-move");
+  var pSynth  = document.getElementById("p-synth");
+  var movedP  = null;
+  function layoutProse(){
+    if(mq.matches){
+      if(!movedP){
+        movedP = document.createElement("p");
+        movedP.appendChild(segMove);   // moves the span out of pSynth
+        proseL.appendChild(movedP);    // ...and onto the end of the top block
+      }
+    } else if(movedP){
+      pSynth.insertBefore(segMove, pSynth.firstChild); // back to the paragraph start
+      movedP.remove(); movedP = null;
+    }
+  }
+
+  function onBreakpoint(){ pickSequence(); layoutProse(); }
+  // React if the viewport crosses the breakpoint (e.g. phone rotate).
+  if(mq.addEventListener) mq.addEventListener("change", onBreakpoint);
+  else if(mq.addListener) mq.addListener(onBreakpoint);
+  onBreakpoint();
 })();
 </script>
 </body>
