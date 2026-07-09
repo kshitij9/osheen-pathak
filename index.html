@@ -20,36 +20,40 @@ body{
 .film{position:fixed;inset:0;z-index:0;background:var(--bg);pointer-events:none}
 .film canvas{width:100%;height:100%;display:block}
 
-/* Scroll-synced statement text — two columns flanking the centred face.
-   Container opacity + per-column transforms are driven from JS by frame index. */
+/* Scroll-synced statement text — two frosted-glass panels flanking the face.
+   Each panel + the heading fade individually from JS (the container must stay
+   fully opaque and filter-free, or the panels' backdrop-filter would have no
+   backdrop to frost). */
 .prose{
   position:fixed;inset:0;z-index:5;pointer-events:none;
   display:flex;align-items:center;justify-content:center;
   /* gap = the central corridor kept clear for the face */
   gap:clamp(240px,31vw,540px);
   padding:clamp(20px,5vh,60px) clamp(16px,4vw,64px);
-  opacity:0;will-change:opacity,filter;
-}
-/* Scrim darkens the left/right edges (where the text sits) and stays clear
-   through the centre so the face reads. Fades in/out with .prose. */
-.prose::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(to right,
-    rgba(4,2,1,.85) 0%, rgba(4,2,1,.5) 20%, rgba(4,2,1,0) 40%,
-    rgba(4,2,1,0) 60%, rgba(4,2,1,.5) 80%, rgba(4,2,1,.85) 100%);
+  opacity:1;
 }
 .prose-col{
-  position:relative;flex:0 0 auto;width:clamp(200px,26vw,360px);
+  position:relative;flex:0 0 auto;width:clamp(220px,27vw,380px);
+  opacity:0;                                   /* hidden until JS animates it in */
   color:#f6efe4;
   font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   font-size:clamp(11.5px,1.02vw,15px);
   line-height:1.66;letter-spacing:.004em;
-  text-shadow:0 1px 16px rgba(0,0,0,.72), 0 0 30px rgba(190,64,10,.18);
-  will-change:transform;
+  text-shadow:0 1px 10px rgba(0,0,0,.5);
+  /* frosted glass */
+  padding:clamp(18px,1.8vw,28px) clamp(20px,2vw,30px);
+  background:rgba(30,15,9,.26);
+  -webkit-backdrop-filter:blur(16px) saturate(125%);
+          backdrop-filter:blur(16px) saturate(125%);
+  border:1px solid rgba(255,236,222,.16);
+  border-radius:18px;
+  box-shadow:0 24px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.09);
+  will-change:transform,opacity;
 }
 .prose-head{
   position:absolute;top:clamp(22px,6.5vh,64px);left:50%;
   transform:translate(-50%,0);transform-origin:50% 0;
+  opacity:0;                                   /* hidden until JS animates it in */
   margin:0;color:#FCCC19;
   font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   font-weight:800;text-transform:uppercase;white-space:nowrap;
@@ -73,16 +77,22 @@ body{
 :focus-visible{outline:2px solid #FCCC19;outline-offset:3px}
 
 @media (max-width:680px){
-  /* Portrait: stack the two blocks above/below the face instead of beside it. */
-  .prose{flex-direction:column;justify-content:space-between;
-    padding:clamp(58px,11vh,92px) 22px clamp(26px,7vh,64px);gap:14px}
-  .prose-head{top:clamp(18px,3vh,26px);font-size:clamp(14px,4.6vw,20px);letter-spacing:.26em}
-  .prose::before{background:linear-gradient(to bottom,
-    rgba(4,2,1,.86) 0%, rgba(4,2,1,.5) 22%, rgba(4,2,1,0) 42%,
-    rgba(4,2,1,0) 58%, rgba(4,2,1,.5) 78%, rgba(4,2,1,.86) 100%)}
-  .prose-col{width:100%;max-width:100%;font-size:clamp(11px,3.1vw,13.5px);
-    line-height:1.5;text-align:center;text-shadow:0 1px 14px rgba(0,0,0,.8)}
-  .prose-right{text-align:center}
+  /* Portrait: both blocks live in the top orange negative space and are shown
+     one after another (opacity/transform driven from JS). They overlap in the
+     same spot; only one is visible at a time. */
+  .prose{display:block;padding:0}
+  .prose-head{top:clamp(14px,2.4vh,22px);font-size:clamp(14px,4.6vw,20px);letter-spacing:.26em}
+  .prose-col{
+    position:absolute;left:50%;top:27%;
+    transform:translate(-50%,-50%);transform-origin:50% 50%;
+    width:min(92%,440px);max-width:none;
+    text-align:center;
+    font-size:clamp(10.5px,3vw,12.5px);line-height:1.46;
+    text-shadow:0 1px 6px rgba(0,0,0,.5);
+    padding:clamp(16px,4.4vw,22px) clamp(16px,4.6vw,24px);border-radius:16px;
+  }
+  .prose-right{text-align:center;transform-origin:50% 50%}
+  .prose-col p{margin:0 0 .8em}
 }
 </style>
 </head>
@@ -198,6 +208,8 @@ body{
   function backOut(t){ t = clamp01(t); var s = 1.7; var u = t - 1; return 1 + u*u*((s+1)*u + s); }
   var T_IN = 27, T_OUT = 80;
   function updateText(f){
+    if(usingMobile){ updateTextMobile(f); return; }
+
     // opacity: fade in over the first ~8 frames, clear over the last ~6
     var vis = clamp01(Math.min(smooth(T_IN, T_IN+8, f), 1 - smooth(T_OUT-6, T_OUT, f)));
     // presence: 1 while held, 0 at both ends → drives the slide/scale on entry AND exit
@@ -207,18 +219,50 @@ body{
     var slide = away * Math.min(160, window.innerWidth*0.12); // converge toward the face
     var y = away * 20 - (f - T_IN)*0.22;                    // small vertical settle + gentle parallax
     var s = (0.9 + eased*0.1).toFixed(4);                  // scale 0.90 → 1.00
-    var blur = (1-vis)*9;                                   // stronger focus-pull
 
-    prose.style.opacity = vis.toFixed(3);
-    prose.style.filter = vis > 0 ? "blur(" + blur.toFixed(2) + "px)" : "";
+    var o = vis.toFixed(3);
+    proseL.style.opacity = o;   // fade each panel individually (keeps backdrop-filter alive)
+    proseR.style.opacity = o;
     proseL.style.transform = "translate(" + (-slide).toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + s + ")";
     proseR.style.transform = "translate(" + ( slide).toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + s + ")";
 
     // Heading: drops in from above with its letter-spacing opening up as it settles.
     var hy = away * -26;
     var hs = (0.9 + eased*0.1).toFixed(4);
+    proseHead.style.opacity = o;
     proseHead.style.transform = "translate(-50%," + hy.toFixed(1) + "px) scale(" + hs + ")";
     proseHead.style.letterSpacing = (0.16 + eased*0.16).toFixed(3) + "em";
+  }
+
+  // Mobile: both blocks sit in the top orange negative space and play in
+  // sequence — block 1 (through "…shaping the idea"), a clean wipe, then
+  // block 2 — while the heading + scrim hold across the whole passage.
+  function updateTextMobile(f){
+    // envelope: scrim + heading presence across the full passage (46→88)
+    var vis = clamp01(Math.min(smooth(44, 52, f), 1 - smooth(82, 88, f)));
+    var present = smooth(44, 55, f) * (1 - smooth(80, 88, f));
+    var eased = backOut(present);
+    var away = 1 - eased;
+
+    // sequential opacities — block 1 clears before block 2 arrives (brief empty wipe)
+    var b1 = clamp01(smooth(46, 54, f) * (1 - smooth(60, 66, f)));
+    var b2 = clamp01(smooth(68, 76, f) * (1 - smooth(82, 88, f)));
+    var e1 = smooth(46, 56, f), e2 = smooth(68, 78, f);
+    var y1 = (1-e1)*16 - (f-46)*0.14;   // rise in + gentle parallax
+    var y2 = (1-e2)*16 - (f-68)*0.14;
+    var s1 = (0.94 + e1*0.06).toFixed(4);
+    var s2 = (0.94 + e2*0.06).toFixed(4);
+
+    proseL.style.opacity = b1.toFixed(3);
+    proseR.style.opacity = b2.toFixed(3);
+    proseL.style.transform = "translate(-50%, calc(-50% + " + y1.toFixed(1) + "px)) scale(" + s1 + ")";
+    proseR.style.transform = "translate(-50%, calc(-50% + " + y2.toFixed(1) + "px)) scale(" + s2 + ")";
+
+    proseHead.style.opacity = vis.toFixed(3);
+    var hy = away * -22;
+    var hs = (0.9 + eased*0.1).toFixed(4);
+    proseHead.style.transform = "translate(-50%," + hy.toFixed(1) + "px) scale(" + hs + ")";
+    proseHead.style.letterSpacing = (0.14 + eased*0.14).toFixed(3) + "em";
   }
 
   function loop(){
