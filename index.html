@@ -66,6 +66,146 @@ body{
 .prose-col p:last-child{margin-bottom:0}
 .prose-col .accent{color:#FCCC19;font-weight:600;letter-spacing:.02em}
 
+/* ── Brand columns — two vertical stacks of frosted-glass logo circles that
+   flank the portrait and pan vertically with scroll (driven from JS). Fade is
+   applied per-circle via --bo so the container never becomes a backdrop-root
+   (which would kill the circles' backdrop-filter). */
+.brands{
+  position:fixed;inset:0;z-index:6;
+  --bo:0;pointer-events:none;overflow:hidden;
+}
+.brand-col{
+  position:absolute;top:0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(20px,2.8vh,42px);
+  padding:clamp(16px,3vh,44px) 0;
+  will-change:transform;
+}
+.brand-col-left{left:clamp(16px,5vw,100px)}
+.brand-col-right{right:clamp(16px,5vw,100px)}
+.brand{
+  position:relative;flex:0 0 auto;
+  width:clamp(64px,7.5vw,120px);height:clamp(64px,7.5vw,120px);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  opacity:var(--bo);                                   /* per-circle fade */
+  background:rgba(30,15,9,.28);
+  -webkit-backdrop-filter:blur(14px) saturate(125%);
+          backdrop-filter:blur(14px) saturate(125%);
+  border:1px solid rgba(255,236,222,.18);
+  box-shadow:0 16px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+  transition:transform .35s cubic-bezier(.2,.85,.25,1),
+             box-shadow .35s ease, border-color .35s ease, background .35s ease;
+}
+/* Circles are only interactive while the section is on screen */
+.brands.active .brand{pointer-events:auto}
+.brand img{
+  width:58%;height:58%;object-fit:contain;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.45));
+  transition:transform .35s cubic-bezier(.2,.85,.25,1);
+}
+/* Hover: lift, gold ring + glow, brighten */
+.brand:hover{
+  transform:scale(1.14);z-index:3;
+  background:rgba(40,20,10,.34);
+  border-color:rgba(252,204,25,.55);
+  box-shadow:0 20px 46px rgba(0,0,0,.5),
+             0 0 0 2px rgba(252,204,25,.5),
+             0 0 30px rgba(252,204,25,.4);
+}
+.brand:hover img{transform:scale(1.08)}
+/* Brand-name label — slides out toward the centre of the screen */
+.brand-name{
+  position:absolute;top:50%;
+  white-space:nowrap;pointer-events:none;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(10px,.85vw,13px);font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:#f8ecdc;padding:6px 13px;border-radius:999px;
+  background:rgba(12,6,3,.82);border:1px solid rgba(255,236,222,.18);
+  box-shadow:0 8px 24px rgba(0,0,0,.45);
+  opacity:0;
+  transition:opacity .3s ease, transform .3s cubic-bezier(.2,.85,.25,1);
+}
+.brand-col-left  .brand-name{left:calc(100% + 14px);transform:translateY(-50%) translateX(-8px)}
+.brand-col-right .brand-name{right:calc(100% + 14px);transform:translateY(-50%) translateX(8px)}
+.brand:hover .brand-name{opacity:1;transform:translateY(-50%) translateX(0)}
+.brands-head{
+  position:absolute;top:clamp(20px,6vh,58px);left:50%;
+  transform:translate(-50%,0);
+  opacity:var(--bo);                                   /* fades with the section */
+  margin:0;color:#FCCC19;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-weight:700;text-transform:uppercase;white-space:nowrap;
+  font-size:clamp(13px,1.5vw,22px);letter-spacing:.24em;
+  text-shadow:0 2px 4px rgba(0,0,0,.85), 0 3px 20px rgba(0,0,0,.65), 0 0 30px rgba(230,80,10,.32);
+}
+
+/* ── Contact section (frames 175→end) — sits in the left negative space ── */
+.contact{
+  position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;
+  display:flex;align-items:center;justify-content:flex-start;
+  padding:clamp(24px,6vh,72px) clamp(26px,6vw,112px);
+}
+.contact.active{pointer-events:none}          /* only the links catch pointer events */
+.contact.active .contact-link{pointer-events:auto}
+.contact-inner{
+  max-width:min(52ch,46vw);
+  display:flex;flex-direction:column;gap:clamp(26px,5vh,58px);
+  will-change:transform;
+}
+/* Quote carousel */
+.quotes{position:relative;width:100%;min-height:clamp(92px,17vh,150px)}
+.quote{
+  position:absolute;left:0;right:0;top:0;margin:0;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .8s ease, transform .8s cubic-bezier(.2,.85,.25,1);
+}
+.quote.is-active{opacity:1;transform:none}
+.quote p{
+  margin:0 0 .5em;color:#f6efe4;
+  font-family:Georgia,"Times New Roman",serif;font-style:italic;
+  font-size:clamp(15px,1.7vw,26px);line-height:1.4;
+  text-shadow:0 2px 16px rgba(0,0,0,.55);
+}
+.quote cite{
+  color:#FCCC19;font-style:normal;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(10px,.9vw,13px);font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+}
+/* Contact block */
+.contact-kicker{
+  color:#e7c9b4;font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(10px,1vw,13px);font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+  margin:0 0 .7em;text-shadow:0 1px 10px rgba(0,0,0,.6);
+}
+.contact-head{
+  margin:0 0 clamp(18px,3vh,32px);color:#FCCC19;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  font-size:clamp(30px,5vw,72px);line-height:.95;
+  text-shadow:0 3px 22px rgba(0,0,0,.6), 0 0 40px rgba(230,80,10,.3);
+}
+.contact-lines{display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)}
+.contact-link{
+  display:flex;flex-direction:column;gap:3px;width:max-content;max-width:100%;
+  transition:transform .3s cubic-bezier(.2,.85,.25,1);
+}
+.contact-label{
+  color:#e7c9b4;font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(9px,.85vw,11px);font-weight:600;letter-spacing:.26em;text-transform:uppercase;
+}
+.contact-value{
+  color:#f6efe4;font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(16px,1.9vw,30px);font-weight:600;letter-spacing:.01em;
+  text-shadow:0 2px 14px rgba(0,0,0,.5);
+  background-image:linear-gradient(#FCCC19,#FCCC19);
+  background-size:0% 2px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .35s ease;
+}
+.contact-link:hover .contact-value,.contact-link:focus-visible .contact-value{
+  background-size:100% 2px;color:#FCCC19;
+}
+
 /* Progress hairline at the very bottom */
 .progress{position:fixed;left:0;bottom:0;height:2px;z-index:10;
   width:calc(var(--p,0)*100%);background:#FCCC19;
@@ -93,6 +233,19 @@ body{
   }
   .prose-right{text-align:center;transform-origin:50% 50%}
   .prose-col p{margin:0 0 .8em}
+  /* Portrait: narrower side columns with smaller circles hugging the edges */
+  .brand-col{gap:clamp(14px,2.4vh,26px);padding:clamp(12px,2.4vh,30px) 0}
+  .brand-col-left{left:clamp(8px,2.5vw,18px)}
+  .brand-col-right{right:clamp(8px,2.5vw,18px)}
+  .brand{width:clamp(48px,13vw,60px);height:clamp(48px,13vw,60px)}
+  .brands-head{top:clamp(14px,2.4vh,24px);font-size:clamp(12px,3.6vw,16px);
+    letter-spacing:.16em;white-space:normal;text-align:center;width:min(74%,300px)}
+  /* Contact stacks in the upper red space, centred */
+  .contact{align-items:flex-start;justify-content:center;
+    padding:clamp(40px,9vh,90px) 24px}
+  .contact-inner{width:min(90%,360px);max-width:none;align-items:center;text-align:center;gap:clamp(22px,4vh,40px)}
+  .quotes{min-height:clamp(96px,18vh,150px);text-align:center}
+  .contact-link{align-items:center}
 }
 </style>
 </head>
@@ -112,6 +265,49 @@ body{
   <div class="prose-col prose-right">
     <p id="p-synth"><span id="seg-move">Having worked every stage means I hold the whole thing in my head at once. I&rsquo;m thinking about production while I&rsquo;m still shaping the idea. </span>I&rsquo;m editing before the camera even rolls. Writing, filmmaking, execution &mdash; to me these were never separate disciplines. They&rsquo;re just different points where the same idea can get protected, or lost.</p>
     <p>I&rsquo;m not chasing beautiful work. I&rsquo;m interested in making work that people remember years later because it became part of the way they think.</p>
+  </div>
+</section>
+
+<!-- Scroll-synced brand columns (frames 98→152) flanking the portrait.
+     Both columns are built + panned vertically from JS by scroll position. -->
+<section class="brands" id="brands" aria-label="Selected brands worked with">
+  <h2 class="brands-head" id="brands-head">Ideas brought to life for</h2>
+  <div class="brand-col brand-col-left" id="brand-col-left"></div>
+  <div class="brand-col brand-col-right" id="brand-col-right"></div>
+</section>
+
+<!-- Contact section (frames 175→end) in the left negative space. -->
+<section class="contact" id="contact" aria-label="Contact">
+  <div class="contact-inner">
+    <div class="quotes" id="quotes" aria-label="What people say">
+      <blockquote class="quote is-active">
+        <p>&ldquo;You can&rsquo;t use up creativity.The more you use, the more you have.&rdquo;</p>
+        <cite>Maya Angelou</cite>
+      </blockquote>
+      <blockquote class="quote">
+        <p>&ldquo;Have no fear of perfection. You'll never reach it.&rdquo;</p>
+        <cite>Salvador Dali</cite>
+      </blockquote>
+      <blockquote class="quote">
+        <p>&ldquo;Inspiration exists, but it has to find you working.&rdquo;</p>
+        <cite>Pablo Picasso</cite>
+      </blockquote>
+    </div>
+
+    <div class="contact-body">
+      <p class="contact-kicker">Let&rsquo;s make something remembered</p>
+      <h2 class="contact-head">Get in touch</h2>
+      <div class="contact-lines">
+        <a class="contact-link" href="mailto:osheenninjapathak@gmail.com">
+          <span class="contact-label">Email</span>
+          <span class="contact-value">osheenninjapathak@gmail.com</span>
+        </a>
+        <a class="contact-link" href="tel:+919876543210">
+          <span class="contact-label">Phone</span>
+          <span class="contact-value">+91&nbsp;98765&nbsp;43210</span>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -265,6 +461,77 @@ body{
     proseHead.style.letterSpacing = (0.14 + eased*0.14).toFixed(3) + "em";
   }
 
+  // ── Brand columns (frames 98→152) ────────────────────────────
+  // Two vertical stacks flanking the portrait, panned in opposite directions
+  // by scroll position. Replace with the real client logos (same folder/names).
+  var LOGOS = [
+    { src:"logos/logo1.png", alt:"Master's Union" },
+    { src:"logos/logo2.png", alt:"Loco" },
+    { src:"logos/logo3.png", alt:"Gobble" },
+    { src:"logos/logo4.png", alt:"Hindustan Times" },
+    { src:"logos/logo5.png", alt:"Filter Copy" },
+    { src:"logos/logo6.png", alt:"Alt Balaji" },
+    { src:"logos/logo7.png", alt:"Saregama Music" },
+    { src:"logos/logo8.png", alt:"Dice Media" }
+  ];
+  var brands = document.getElementById("brands");
+  var brandColLeft = document.getElementById("brand-col-left");
+  var brandColRight = document.getElementById("brand-col-right");
+  var brandScroll = 0;   // column overflow past the viewport (px), cached
+  (function buildBrands(){
+    // Repeat the set so each column is comfortably taller than the viewport,
+    // giving room to pan. The right column starts offset for variety.
+    function stack(offset){
+      var html = "", n = LOGOS.length;
+      for(var i=0;i<n*2;i++){
+        var lg = LOGOS[(i+offset) % n];
+        html += '<span class="brand"><img src="' + lg.src + '" alt="' + lg.alt +
+                '" loading="eager" decoding="async">' +
+                '<span class="brand-name">' + lg.alt + '</span></span>';
+      }
+      return html;
+    }
+    brandColLeft.innerHTML = stack(0);
+    brandColRight.innerHTML = stack(4);   // half-set offset so the sides differ
+  })();
+
+  function measureBrands(){
+    brandScroll = Math.max(0, brandColLeft.offsetHeight - window.innerHeight);
+  }
+  measureBrands();
+
+  function updateBrands(f){
+    var vis = clamp01(Math.min(smooth(98, 106, f), 1 - smooth(146, 152, f)));
+    brands.style.setProperty("--bo", vis.toFixed(3));
+    brands.classList.toggle("active", vis > 0.05);   // enable hover only while visible
+    // linear scroll progress within the window → direct, scroll-synced pan
+    var p = clamp01((f - 98) / (152 - 98));
+    brandColLeft.style.transform  = "translateY(" + (-(p * brandScroll)).toFixed(1) + "px)";       // scrolls up
+    brandColRight.style.transform = "translateY(" + (-((1 - p) * brandScroll)).toFixed(1) + "px)"; // scrolls down
+  }
+
+  // ── Contact section (frames 175→end) ─────────────────────────
+  var contact = document.getElementById("contact");
+  var contactInner = contact.querySelector(".contact-inner");
+  function updateContact(f){
+    var vis = clamp01(smooth(175, 184, f));   // fades in, then holds to the end
+    contact.style.opacity = vis.toFixed(3);
+    contact.classList.toggle("active", vis > 0.05);
+    contactInner.style.transform = "translateY(" + ((1 - vis) * 24).toFixed(1) + "px)";
+  }
+
+  // Auto-rotating quote carousel (independent of scroll)
+  (function quoteCarousel(){
+    var quotes = Array.prototype.slice.call(document.querySelectorAll(".quote"));
+    if(quotes.length < 2) return;
+    var qi = 0;
+    setInterval(function(){
+      quotes[qi].classList.remove("is-active");
+      qi = (qi + 1) % quotes.length;
+      quotes[qi].classList.add("is-active");
+    }, 4800);
+  })();
+
   function loop(){
     var diff = target - cur;
     if(Math.abs(diff) < 0.01){ cur = target; }
@@ -273,6 +540,8 @@ body{
     var resized = sizeCanvas();
     if(Math.abs(cur - lastDrawn) > 0.004 || resized) drawFrame(cur);
     updateText(cur);
+    updateBrands(cur);
+    updateContact(cur);
 
     if(Math.abs(target - cur) > 0.004){ requestAnimationFrame(loop); }
     else { running = false; }
@@ -286,6 +555,8 @@ body{
     cur = target;
     drawFrame(Math.max(0, Math.min(count-1, target)));
     updateText(cur);
+    updateBrands(cur);
+    updateContact(cur);
   }
 
   function onScroll(){
@@ -319,7 +590,7 @@ body{
   }
 
   window.addEventListener("scroll", onScroll, {passive:true});
-  window.addEventListener("resize", function(){ dpr = Math.min(2, window.devicePixelRatio || 1); lastDrawn=-1; onScroll(); });
+  window.addEventListener("resize", function(){ dpr = Math.min(2, window.devicePixelRatio || 1); lastDrawn=-1; measureBrands(); onScroll(); });
   document.addEventListener("visibilitychange", function(){
     if(!document.hidden){ running = false; lastDrawn = -1; onScroll(); }
   });
