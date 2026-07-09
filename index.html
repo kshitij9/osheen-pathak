@@ -524,7 +524,9 @@ html.loading{overflow:hidden}
     { src:"logos/logo5.png", alt:"Filter Copy" },
     { src:"logos/logo6.png", alt:"Alt Balaji" },
     { src:"logos/logo7.png", alt:"Saregama Music" },
-    { src:"logos/logo8.png", alt:"Dice Media" }
+    { src:"logos/logo8.png", alt:"Dice Media" },
+    { src:"logos/logo9.png", alt:"Glitch" },
+    { src:"logos/logo10.png", alt:"Matar Media" }
   ];
   var brands = document.getElementById("brands");
   var brandColLeft = document.getElementById("brand-col-left");
@@ -566,7 +568,7 @@ html.loading{overflow:hidden}
   var contact = document.getElementById("contact");
   var contactInner = contact.querySelector(".contact-inner");
   function updateContact(f){
-    var vis = clamp01(smooth(175, 184, f));   // fades in, then holds to the end
+    var vis = clamp01(smooth(165, 175, f));   // fades in, then holds to the end
     contact.style.opacity = vis.toFixed(3);
     contact.classList.toggle("active", vis > 0.05);
     contactInner.style.transform = "translateY(" + ((1 - vis) * 24).toFixed(1) + "px)";
