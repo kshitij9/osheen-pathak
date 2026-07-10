@@ -39,6 +39,33 @@ html.loading{overflow:hidden}
   font-size:11px;letter-spacing:.24em}
 @keyframes loaderPulse{0%,100%{opacity:.62}50%{opacity:1}}
 
+/* Hero "scroll to explore" cue (opacity driven from JS by frame index) */
+.scrollcue{
+  position:fixed;left:50%;bottom:clamp(16px,4vh,38px);transform:translateX(-50%);
+  z-index:8;pointer-events:none;opacity:0;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+}
+.scrollcue-label{
+  color:#FCCC19;font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:clamp(8.5px,1vw,11px);font-weight:700;letter-spacing:.3em;text-transform:uppercase;
+  text-shadow:0 2px 4px rgba(0,0,0,.85), 0 0 26px rgba(230,80,10,.35);
+}
+.scrollcue-arrow{
+  width:15px;height:15px;position:relative;
+  animation:scrollbounce 1.6s ease-in-out infinite;
+}
+.scrollcue-arrow::before{
+  content:"";position:absolute;inset:0;
+  border-right:2px solid #FCCC19;border-bottom:2px solid #FCCC19;
+  transform:rotate(45deg);
+  filter:drop-shadow(0 1px 5px rgba(0,0,0,.6)) drop-shadow(0 0 8px rgba(252,204,25,.45));
+}
+@keyframes scrollbounce{
+  0%,100%{transform:translateY(0);opacity:.55}
+  50%{transform:translateY(7px);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){ .scrollcue-arrow{animation:none} }
+
 /* Full-screen scroll-synced video (rendered as a canvas frame sequence) */
 .film{position:fixed;inset:0;z-index:0;background:var(--bg);pointer-events:none}
 .film canvas{width:100%;height:100%;display:block}
@@ -246,8 +273,9 @@ html.loading{overflow:hidden}
   .prose{display:block;padding:0}
   .prose-head{top:clamp(14px,2.4vh,22px);font-size:clamp(14px,4.6vw,20px);letter-spacing:.26em}
   .prose-col{
-    position:absolute;left:50%;top:27%;
-    transform:translate(-50%,-50%);transform-origin:50% 50%;
+    /* Top-anchored below the heading so a tall block never climbs into it */
+    position:absolute;left:50%;top:clamp(60px,12vh,98px);
+    transform:translate(-50%,0);transform-origin:50% 0;
     width:min(92%,440px);max-width:none;
     text-align:center;
     font-size:clamp(10.5px,3vw,12.5px);line-height:1.46;
@@ -355,6 +383,12 @@ html.loading{overflow:hidden}
     </div>
   </div>
 </section>
+
+<!-- Hero scroll cue — fades out as the film starts scrubbing -->
+<div class="scrollcue" id="scrollcue" aria-hidden="true">
+  <span class="scrollcue-label">Scroll to explore</span>
+  <span class="scrollcue-arrow"></span>
+</div>
 
 <div class="progress" aria-hidden="true"></div>
 
@@ -508,15 +542,16 @@ html.loading{overflow:hidden}
     var b1 = clamp01(smooth(46, 54, f) * (1 - smooth(60, 66, f)));
     var b2 = clamp01(smooth(68, 76, f) * (1 - smooth(82, 88, f)));
     var e1 = smooth(46, 56, f), e2 = smooth(68, 78, f);
-    var y1 = (1-e1)*16 - (f-46)*0.14;   // rise in + gentle parallax
-    var y2 = (1-e2)*16 - (f-68)*0.14;
+    // Rise in from below the anchor and settle (no upward drift into the heading)
+    var y1 = (1-e1)*18;
+    var y2 = (1-e2)*18;
     var s1 = (0.94 + e1*0.06).toFixed(4);
     var s2 = (0.94 + e2*0.06).toFixed(4);
 
     proseL.style.opacity = b1.toFixed(3);
     proseR.style.opacity = b2.toFixed(3);
-    proseL.style.transform = "translate(-50%, calc(-50% + " + y1.toFixed(1) + "px)) scale(" + s1 + ")";
-    proseR.style.transform = "translate(-50%, calc(-50% + " + y2.toFixed(1) + "px)) scale(" + s2 + ")";
+    proseL.style.transform = "translate(-50%, " + y1.toFixed(1) + "px) scale(" + s1 + ")";
+    proseR.style.transform = "translate(-50%, " + y2.toFixed(1) + "px) scale(" + s2 + ")";
 
     proseHead.style.opacity = vis.toFixed(3);
     var hy = away * -22;
@@ -586,6 +621,12 @@ html.loading{overflow:hidden}
     contactInner.style.transform = "translateY(" + ((1 - vis) * 24).toFixed(1) + "px)";
   }
 
+  // Hero scroll cue: visible at the very start, fades out as scrubbing begins.
+  var scrollcue = document.getElementById("scrollcue");
+  function updateScrollCue(f){
+    scrollcue.style.opacity = clamp01(1 - smooth(1, 9, f)).toFixed(3);
+  }
+
   // Auto-rotating quote carousel (independent of scroll)
   (function quoteCarousel(){
     var quotes = Array.prototype.slice.call(document.querySelectorAll(".quote"));
@@ -608,6 +649,7 @@ html.loading{overflow:hidden}
     updateText(cur);
     updateBrands(cur);
     updateContact(cur);
+    updateScrollCue(cur);
 
     if(Math.abs(target - cur) > 0.004){ requestAnimationFrame(loop); }
     else { running = false; }
@@ -623,6 +665,7 @@ html.loading{overflow:hidden}
     updateText(cur);
     updateBrands(cur);
     updateContact(cur);
+    updateScrollCue(cur);
   }
 
   function onScroll(){
